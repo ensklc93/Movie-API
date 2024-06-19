@@ -4,14 +4,151 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Movie API</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
+      .container { max-width: 800px; margin: 0 auto; }
+      h1 { text-align: center; }
+      .endpoint { margin-bottom: 40px; }
+      h2 { color: #333; }
+      pre { background: #f4f4f4; padding: 10px; border: 1px solid #ddd; }
+    </style>
   </head>
   <body>
-    <p>
-      The objective of this project/API is to build the server-side component of
-      a “movies” web application. The web application will provide users with
-      access to information about different movies, directors, and genres.
-      Users will be able to sign up, update their personal information, and
-      create a list of their favorite movies.
-    </p>
+    <div class="container">
+      <h1>The Movie API</h1>
+      <p>The objective of this project/API is to build the server-side component of a “movies” web application. The web application will provide users with access to information about different movies, directors, and genres. Users will be able to sign up, update their personal information, and create a list of their favorite movies.</p>
+
+      <h2>API Endpoints and Brief Explanation</h2>
+   
+      <div class="endpoint">
+        <h2>Get All Movies</h2>
+        <p><strong>URL:</strong> /movies</p>
+        <p><strong>Method:</strong> GET</p>
+        <p><strong>Query Parameters:</strong> None</p>
+        <p><strong>Description:</strong> Returns a list of all movies in the archive.</p>
+        <p><strong>Response Format:</strong></p>
+        <pre>[
+    {
+      "title": "2001: A Space Odyssey",
+      "director": "Stanley Kubrick",
+      "genre": "Sci-Fi",
+      "description": "An imposing black structure provides a connection between the past and the future...",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/en/1/11/2001_A_Space_Odyssey_%281968%29.png",
+      "isFeatured": "yes"
+    },
+    ...
+  ]</pre>
+      </div>
+  
+      <div class="endpoint">
+        <h2>Get Movie by Title</h2>
+        <p><strong>URL:</strong> /movies/[title]</p>
+        <p><strong>Method:</strong> GET</p>
+        <p><strong>Query Parameters:</strong> title (String) - The title of the movie</p>
+        <p><strong>Description:</strong> Returns details of a movie by its title.</p>
+        <p><strong>Response Format:</strong></p>
+        <pre>{
+    "title": "2001: A Space Odyssey",
+    "director": "Stanley Kubrick",
+    "genre": "Sci-Fi",
+    "description": "An imposing black structure provides a connection between the past and the future...",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/en/1/11/2001_A_Space_Odyssey_%281968%29.png",
+    "isFeatured": "yes"
+  }</pre>
+      </div>
+  
+      <div class="endpoint">
+        <h2>Get Genre by Name</h2>
+        <p><strong>URL:</strong> /movies/genre/[name]</p>
+        <p><strong>Method:</strong> GET</p>
+        <p><strong>Query Parameters:</strong> name (String) - The name of the genre</p>
+        <p><strong>Description:</strong> Returns details of a genre by its name.</p>
+        <p><strong>Response Format:</strong></p>
+        <pre>{
+    "name": "Sci-Fi",
+    "description": "Science fiction (sometimes shortened to SF or sci-fi) is a genre of speculative fiction..."
+  }</pre>
+      </div>
+  
+      <div class="endpoint">
+        <h2>Get Director by Name</h2>
+        <p><strong>URL:</strong> /movies/directors/[name]</p>
+        <p><strong>Method:</strong> GET</p>
+        <p><strong>Query Parameters:</strong> name (String) - The name of the director</p>
+        <p><strong>Description:</strong> Returns details of a director by their name.</p>
+        <p><strong>Response Format:</strong></p>
+        <pre>{
+    "name": "Stanley Kubrick",
+    "bio": "Stanley Kubrick was an American film director...",
+    "yearofbirth": "1928",
+    "yearofdeath": "1999"
+  }</pre>
+      </div>
+  
+      <div class="endpoint">
+        <h2>Create a New User</h2>
+        <p><strong>URL:</strong> /users</p>
+        <p><strong>Method:</strong> POST</p>
+        <p><strong>Query Parameters:</strong> None</p>
+        <p><strong>Request Body Format:</strong></p>
+        <pre>{
+    "username": "newuser"
+  }</pre>
+        <p><strong>Description:</strong> Creates a new user with the provided username.</p>
+        <p><strong>Response Format:</strong></p>
+        <pre>{
+    "username": "newuser"
+  }</pre>
+      </div>
+  
+      <div class="endpoint">
+        <h2>Update User Information</h2>
+        <p><strong>URL:</strong> /users/[username]</p>
+        <p><strong>Method:</strong> PUT</p>
+        <p><strong>Query Parameters:</strong> username (String) - The username of the user to update</p>
+        <p><strong>Request Body Format:</strong> Any fields to update</p>
+        <p><strong>Description:</strong> Updates the user's information based on the provided data.</p>
+        <p><strong>Response Format:</strong></p>
+        <pre>"Username has been successfully updated!"</pre>
+      </div>
+  
+      <div class="endpoint">
+        <h2>Add Movie to Favorites</h2>
+        <p><strong>URL:</strong> /users/[username]/[favmovies]</p>
+        <p><strong>Method:</strong> POST</p>
+        <p><strong>Query Parameters:</strong> <ul>
+          <li>username (String) - The username of the user</li>
+          <li>favmovies (String) - The title of the movie to add to favorites</li>
+        </ul>
+      </p>
+        <p><strong>Description:</strong> Adds a movie to the user's list of favorite movies.</p>
+        <p><strong>Response Format:</strong></p>
+        <pre>"Movie successfully added to Favourites list!"</pre>
+      </div>
+  
+      <div class="endpoint">
+        <h2>Remove Movie from Favorites</h2>
+        <p><strong>URL:</strong> /users/[username]/[favmovies]</p>
+        <p><strong>Method:</strong> DELETE</p>
+        <p><strong>Query Parameters:</strong> <ul>
+          <li>username (String) - The username of the user</li>
+          <li>favmovies (String) - The title of the movie to remove from favorites</li>
+        </ul>
+      </p>
+        <p><strong>Description:</strong> Removes a movie from the user's list of favorite movies.</p>
+        <p><strong>Response Format:</strong></p>
+        <pre>"Movie successfully deleted from Favorites list!"</pre>
+      </div>
+  
+      <div class="endpoint">
+        <h2>Delete a User</h2>
+        <p><strong>URL:</strong> /users/[username]</p>
+        <p><strong>Method:</strong> DELETE</p>
+        <p><strong>Query Parameters:</strong> username (String) - The username of the user to delete</p>
+        <p><strong>Description:</strong> Deletes a user from the system.</p>
+        <p><strong>Response Format:</strong></p>
+        <pre>"User successfully deleted!"</pre>
+      </div>
+    </div>
   </body>
-</html>
+  </html>
