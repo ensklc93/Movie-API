@@ -113,7 +113,7 @@ let myDirectors = [
 let users = [
   {
     username: "ensklc",
-    favmovies: "The Lord of the Rings",
+    favmovies: ["The Lord of the Rings"],
   },
 ]
 
@@ -156,7 +156,7 @@ app.post("/users", (req, res) => {
   let newUser = req.body
 
   if (!newUser.username) {
-    const message = 'Missing "name" in request body'
+    const message = 'Missing "username" in request body'
     res.status(400).send(message)
   } else {
     users.push(newUser)
