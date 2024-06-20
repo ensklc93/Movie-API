@@ -176,11 +176,11 @@ app.put("/users/:username", (req, res) => {
   }
 })
 
-app.post("/users/:username/:favmovies", (req, res) => {
+app.post("/users/:username/:movie", (req, res) => {
   res.status(201).send("Movie successfully added to Favourites list!")
 })
 
-app.delete("/users/:username/:favmovies", (req, res) => {
+app.delete("/users/:username/:movie", (req, res) => {
   res.status(201).send("Movie successfully deleted from Favorites list!")
 })
 
