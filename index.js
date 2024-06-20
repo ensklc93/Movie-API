@@ -113,7 +113,7 @@ let myDirectors = [
 let users = [
   {
     username: "ensklc",
-    favmovies: ["The Lord of the Rings"],
+    favmovies: ["The Lord of the Rings"]
   },
 ]
 
