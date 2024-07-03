@@ -1,6 +1,7 @@
 const express = require("express"),
   bodyParser = require("body-parser"),
   morgan = require("morgan")
+  
 
 const mongoose = require("mongoose")
 const Models = require("./models.js")
@@ -10,7 +11,6 @@ const Users = Models.User
 
 const app = express()
 
-const bcrypt = require('bcrypt');
 const { check, validationResult } = require('express-validator');
 
 
@@ -22,7 +22,7 @@ const { check, validationResult } = require('express-validator');
 mongoose.connect(process.env.CONNECTION_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-})
+});
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
