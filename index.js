@@ -166,7 +166,7 @@ app.post("/users/:Username/movies/:MovieID", passport.authenticate('jwt', { sess
 })
 
 app.delete("/users/:Username/movies/:MovieID", passport.authenticate('jwt', { session: false }), async (req, res) => {
-  await Users.findOneAndUpdate(
+  await Users.findOneAndDelete(
     { Username: req.params.Username },
     {
       $pull: { FavoriteMovies: req.params.MovieID },
@@ -182,8 +182,10 @@ app.delete("/users/:Username/movies/:MovieID", passport.authenticate('jwt', { se
     })
 })
 
+
+
 app.delete('/users/:Username', passport.authenticate('jwt', { session: false }), async (req, res) => {
-  await Users.findOneAndUpdate({ Username: req.params.Username })
+  await Users.findOneAndDelete({ Username: req.params.Username })
     .then((user) => {
       if (!user) {
         res.status(400).send(req.params.Username + ' was not found');
