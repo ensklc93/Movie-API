@@ -19,7 +19,7 @@ const { check, validationResult } = require('express-validator');
   useUnifiedTopology: true,
 }) */
 
-mongoose.connect("process.env.CONNECTION_URI", {
+mongoose.connect(process.env.CONNECTION_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
