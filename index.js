@@ -102,7 +102,8 @@ app.get(
   }
 )
 
-app.post('/users', [
+app.post('/users',
+  [
     check('Username', 'Username is required').isLength({min: 5}),
     check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
     check('Password', 'Password is required').not().isEmpty(),
@@ -175,6 +176,13 @@ app.get(
 
 app.put(
   "/users/:Username",
+  [
+    check('Username', 'Username is required').isLength({min: 5}),
+    check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+    check('Password', 'Password is required').not().isEmpty(),
+    check('Email', 'Email does not appear to be valid').isEmail(),
+    check('Birthday', 'Birthday does not appear to be valid').isDate()
+  ],
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     if (req.user.Username !== req.params.Username) {
@@ -203,8 +211,12 @@ app.put(
   }
 )
 
-app.post(
-  "/users/:Username/movies/:MovieID",
+app.post("/users/:Username/movies/:MovieID",
+  [
+    check('Username', 'Username is required').isLength({min: 5}),
+    check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+    check('MovieID', 'Movie contains non alphanumeric characters').isAlphanumeric(),
+  ],
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     await Users.findOneAndUpdate(
