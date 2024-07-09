@@ -13,12 +13,6 @@ const app = express()
 
 const { check, validationResult } = require('express-validator');
 
-
-/* mongoose.connect("mongodb://localhost:27017/cfDB", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-}) */
-
 mongoose.connect(process.env.CONNECTION_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -44,7 +38,6 @@ app.get("/", (req, res) => {
 
 app.get(
   "/movies",
-  passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     await Movies.find()
       .then(movies => {
