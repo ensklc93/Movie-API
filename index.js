@@ -173,8 +173,7 @@ app.put(
     check('Username', 'Username is required').isLength({min: 5}),
     check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
     check('Password', 'Password is required').not().isEmpty(),
-    check('Email', 'Email does not appear to be valid').isEmail(),
-    check('Birthday', 'Birthday does not appear to be valid').isDate()
+    check('Email', 'Email does not appear to be valid').isEmail()
   ],
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
@@ -197,7 +196,7 @@ app.put(
           Username: req.body.Username,
           Password: hashedPassword,
           Email: req.body.Email,
-          Birthday: req.body.Birthday,
+          Birthday: req.body.Birthday
         },
       },
       { new: true }
@@ -286,3 +285,4 @@ const port = process.env.PORT || 8080;
 app.listen(port, '0.0.0.0',() => {
  console.log('Listening on Port ' + port);
 });
+
