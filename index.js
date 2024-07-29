@@ -1,7 +1,6 @@
 const express = require("express"),
   bodyParser = require("body-parser"),
   morgan = require("morgan")
-  
 
 const mongoose = require("mongoose")
 const Models = require("./models.js")
@@ -11,18 +10,39 @@ const Users = Models.User
 
 const app = express()
 
-const { check, validationResult } = require('express-validator');
+const { check, validationResult } = require("express-validator")
 
 mongoose.connect(process.env.CONNECTION_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-});
+})
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
 const cors = require("cors")
-app.use(cors())
+let allowedOrigins = [
+  "http://localhost:8080",
+  "http://testsite.com",
+  "http://localhost:1234",
+  "https://myvideo-ensklc.netlify.app/",
+]
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true)
+      if (allowedOrigins.indexOf(origin) === -1) {
+        // If a specific origin isn’t found on the list of allowed origins
+        let message =
+          "The CORS policy for this application doesn’t allow access from origin " +
+          origin
+        return callback(new Error(message), false)
+      }
+      return callback(null, true)
+    },
+  })
+)
 
 let auth = require("./auth")(app)
 
@@ -96,47 +116,53 @@ app.get(
   }
 )
 
-app.post('/users',
+app.post(
+  "/users",
   [
-    check('Username', 'Username is required').isLength({min: 5}),
-    check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
-    check('Password', 'Password is required').not().isEmpty(),
-    check('Email', 'Email does not appear to be valid').isEmail()
-  ], async (req, res) => {
-
-  // check the validation object for errors
-    let errors = validationResult(req);
+    check("Username", "Username is required").isLength({ min: 5 }),
+    check(
+      "Username",
+      "Username contains non alphanumeric characters - not allowed."
+    ).isAlphanumeric(),
+    check("Password", "Password is required").not().isEmpty(),
+    check("Email", "Email does not appear to be valid").isEmail(),
+  ],
+  async (req, res) => {
+    // check the validation object for errors
+    let errors = validationResult(req)
 
     if (!errors.isEmpty()) {
-      return res.status(422).json({ errors: errors.array() });
+      return res.status(422).json({ errors: errors.array() })
     }
 
-    let hashedPassword = Users.hashPassword(req.body.Password);
+    let hashedPassword = Users.hashPassword(req.body.Password)
     await Users.findOne({ Username: req.body.Username }) // Search to see if a user with the requested username already exists
-      .then((user) => {
+      .then(user => {
         if (user) {
           //If the user is found, send a response that it already exists
-          return res.status(400).send(req.body.Username + ' already exists');
+          return res.status(400).send(req.body.Username + " already exists")
         } else {
-          Users
-            .create({
-              Username: req.body.Username,
-              Password: hashedPassword,
-              Email: req.body.Email,
-              Birthday: req.body.Birthday
+          Users.create({
+            Username: req.body.Username,
+            Password: hashedPassword,
+            Email: req.body.Email,
+            Birthday: req.body.Birthday,
+          })
+            .then(user => {
+              res.status(200).json(user)
             })
-            .then((user) => { res.status(200).json(user) })
-            .catch((error) => {
-              console.error(error);
-              res.status(500).send('Error: ' + error);
-            });
+            .catch(error => {
+              console.error(error)
+              res.status(500).send("Error: " + error)
+            })
         }
       })
-      .catch((error) => {
-        console.error(error);
-        res.status(500).send('Error: ' + error);
-      });
-  });
+      .catch(error => {
+        console.error(error)
+        res.status(500).send("Error: " + error)
+      })
+  }
+)
 
 app.get(
   "/users",
@@ -171,20 +197,23 @@ app.get(
 app.put(
   "/users/:Username",
   [
-    check('Username', 'Username is required').isLength({min: 5}),
-    check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
-    check('Password', 'Password is required').not().isEmpty(),
-    check('Email', 'Email does not appear to be valid').isEmail()
+    check("Username", "Username is required").isLength({ min: 5 }),
+    check(
+      "Username",
+      "Username contains non alphanumeric characters - not allowed."
+    ).isAlphanumeric(),
+    check("Password", "Password is required").not().isEmpty(),
+    check("Email", "Email does not appear to be valid").isEmail(),
   ],
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
-    let errors = validationResult(req);
+    let errors = validationResult(req)
 
     if (!errors.isEmpty()) {
-      return res.status(422).json({ errors: errors.array() });
+      return res.status(422).json({ errors: errors.array() })
     }
 
-    let hashedPassword = Users.hashPassword(req.body.Password);
+    let hashedPassword = Users.hashPassword(req.body.Password)
 
     if (req.user.Username !== req.params.Username) {
       return res.status(400).send("Permission denied")
@@ -197,7 +226,7 @@ app.put(
           Username: req.body.Username,
           Password: hashedPassword,
           Email: req.body.Email,
-          Birthday: req.body.Birthday
+          Birthday: req.body.Birthday,
         },
       },
       { new: true }
@@ -212,11 +241,18 @@ app.put(
   }
 )
 
-app.post("/users/:Username/movies/:MovieID",
+app.post(
+  "/users/:Username/movies/:MovieID",
   [
-    check('Username', 'Username is required').isLength({min: 5}),
-    check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
-    check('MovieID', 'Movie contains non alphanumeric characters').isAlphanumeric(),
+    check("Username", "Username is required").isLength({ min: 5 }),
+    check(
+      "Username",
+      "Username contains non alphanumeric characters - not allowed."
+    ).isAlphanumeric(),
+    check(
+      "MovieID",
+      "Movie contains non alphanumeric characters"
+    ).isAlphanumeric(),
   ],
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
@@ -277,28 +313,12 @@ app.delete(
   }
 )
 
-const cors = require('cors');
-let allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'http://localhost:1234', 'https://myvideo-ensklc.netlify.app'];
-
-app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) === -1) { // If a specific origin isn’t found on the list of allowed origins
-      let message = 'The CORS policy for this application doesn’t allow access from origin ' + origin;
-      return callback(new Error(message), false);
-    }
-    return callback(null, true);
-  }
-}));
-
-
 app.use((err, req, res, next) => {
   console.error(err.stack)
   res.status(500).send("Something broke!")
 })
 
-const port = process.env.PORT || 8080;
-app.listen(port, '0.0.0.0',() => {
- console.log('Listening on Port ' + port);
-});
-
+const port = process.env.PORT || 8080
+app.listen(port, "0.0.0.0", () => {
+  console.log("Listening on Port " + port)
+})
