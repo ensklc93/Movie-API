@@ -21,14 +21,24 @@ mongoose.connect(process.env.CONNECTION_URI, {
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
-let allowedOrigins = [
-  "http://localhost:8080",
-  "http://testsite.com",
-  "http://localhost:1234",
-  "https://myvideo-ensklc.netlify.app/",
-]
 
-app.use(cors());
+const allowedOrigins = [
+  'http://localhost:8080',
+  'https://myvideo-ensklc.netlify.app'
+];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    console.log("Origin: ", origin); // Log the origin of the request
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = `The CORS policy for this site does not allow access from the specified Origin.`;
+      console.log(msg); // Log the error message
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  }
+}));
 
 let auth = require("./auth")(app)
 
