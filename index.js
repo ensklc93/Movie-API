@@ -2,6 +2,7 @@ const express = require("express"),
   bodyParser = require("body-parser"),
   morgan = require("morgan")
 
+const cors = require("cors")
 const mongoose = require("mongoose")
 const Models = require("./models.js")
 
@@ -20,7 +21,6 @@ mongoose.connect(process.env.CONNECTION_URI, {
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
-const cors = require("cors")
 let allowedOrigins = [
   "http://localhost:8080",
   "http://testsite.com",
@@ -28,21 +28,7 @@ let allowedOrigins = [
   "https://myvideo-ensklc.netlify.app/",
 ]
 
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (!origin) return callback(null, true)
-      if (allowedOrigins.indexOf(origin) === -1) {
-        // If a specific origin isn’t found on the list of allowed origins
-        let message =
-          "The CORS policy for this application doesn’t allow access from origin " +
-          origin
-        return callback(new Error(message), false)
-      }
-      return callback(null, true)
-    },
-  })
-)
+app.use(cors());
 
 let auth = require("./auth")(app)
 
