@@ -24,7 +24,8 @@ app.use(bodyParser.json())
 
 const allowedOrigins = [
   'http://localhost:8080',
-  'https://myvideo-ensklc.netlify.app'
+  'https://myvideo-ensklc.netlify.app',
+  'http://localhost:1234'
 ];
 
 app.use(cors({
