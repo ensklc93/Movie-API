@@ -25,7 +25,8 @@ app.use(bodyParser.json())
 const allowedOrigins = [
   'http://localhost:8080',
   'https://myvideo-ensklc.netlify.app',
-  'http://localhost:1234'
+  'http://localhost:1234',
+  'https://ensklc93.github.io'
 ];
 
 app.use(cors({
@@ -210,8 +211,6 @@ app.put(
       return res.status(422).json({ errors: errors.array() })
     }
 
-    let hashedPassword = Users.hashPassword(req.body.Password)
-
     if (req.user.Username !== req.params.Username) {
       return res.status(400).send("Permission denied")
     }
@@ -221,7 +220,7 @@ app.put(
       {
         $set: {
           Username: req.body.Username,
-          Password: hashedPassword,
+          Password: req.body.Password,
           Email: req.body.Email,
           Birthday: req.body.Birthday,
         },
